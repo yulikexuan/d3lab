@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The D3.js Lab - 1_31</title>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+</head>
+<body>
+    <script>
+        d3.select("body")
+            .append("div")
+            .style("border", "1px blue solid")
+            .html("Hello World!");
+        d3.select("div")
+            .style("background-color", "pink")
+            .style("font-size", "24px")
+            .attr("id", "mewDiv")
+            .attr("class", "d3div")
+            .on("click", ()=>{console.log("You click a div")});
+    </script>
+</body>
+</html>

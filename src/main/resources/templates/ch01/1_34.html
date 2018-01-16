@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The D3.js Lab - 1_34</title>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+</head>
+<body>
+<div id="vizcontainer">
+    <svg style="width:500px; height:500px; border:1px lightgray solid;" />
+</div>
+<script>
+    d3.select("svg")
+        .append("circle")
+        .attr("r", 20)
+        .attr("cx",20)
+        .attr("cy",20)
+        .style("fill", "#FF4400");
+
+    d3.select("svg")
+        .append("text")
+        .attr("id", "textA")
+        .attr("x",20)
+        .attr("y",20)
+        .style("opacity", 0)
+        .text("HELLO WORLD");
+
+    d3.select("svg")
+        .append("circle")
+        .attr("r", 100)
+        .attr("cx",400)
+        .attr("cy",400)
+        .style("fill","lightblue");
+
+    d3.select("svg")
+        .append("text")
+        .attr("id", "textB")
+        .attr("x",400)
+        .attr("y",400)
+        .style("opacity", 0)
+        .text("Uh, hi.");
+
+    d3.select("#textA")
+        .transition()
+        .delay(1000)
+        .style("opacity", 1);
+
+    d3.select("#textB")
+        .transition()
+        .delay(3000)
+        .style("opacity", 0.75);
+
+    d3.select("#textA")
+        .transition()
+        .duration(2000)
+        .style("opacity", 0);
+
+    d3.selectAll("circle")
+        .transition()
+        .duration(2000)
+        .attr("cy", 200);
+
+    d3.select("#textA")
+        .transition()
+        .duration(2000)
+        .style("opacity", 1);
+
+</script>
+</body>
+</html>

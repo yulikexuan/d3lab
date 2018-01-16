@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The D3.js Lab - 1_32</title>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+</head>
+<body>
+<div id="vizcontainer">
+    <svg style="width:500px; height:500px; border:1px lightgray solid;" />
+</div>
+<script>
+    d3.select("svg")
+        .append("line")
+        .attr("x1", 20)
+        .attr("y1", 20)
+        .attr("x2", 400)
+        .attr("y2", 400)
+        .style("stroke", "blue")
+        .style("stroke-width", "2px");
+    d3.select("svg")
+        .append("text")
+        .attr("x", 20)
+        .attr("y", 20)
+        .text("Hello");
+    d3.select("svg")
+        .append("circle")
+        .attr("r", 20)
+        .attr("cx", 20)
+        .attr("cy", 20)
+        .style("fill", "#FF4400");
+    d3.select("svg")
+        .append("circle")
+        .attr("r", 100)
+        .attr("cx", 400)
+        .attr("cy", 400)
+        .style("fill", "lightblue");
+    d3.select("svg")
+        .append("text")
+        .attr("x", 400)
+        .attr("y", 400)
+        .text("World");
+</script>
+</body>
+</html>
