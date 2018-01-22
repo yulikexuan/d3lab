@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Measuring Data</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+</head>
+<body>
+<div class="container-fluid" style="margin-top: 20px">
+
+    <div class="row">
+
+        <div class="col-xs-6 col-xs-offset-3">
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">Measuring Data</h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="alert alert-success">
+                        Check the console of your browser.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    var testArray = [88,10000,1,75,12,35];
+    console.log("Min: " + d3.min(testArray, el => el));
+    console.log("Max: " + d3.max(testArray, el => el));
+    console.log("Average: " + d3.mean(testArray, el => el)); // Average
+
+    d3.csv("/api/data/cities", data => {
+        console.log("Min population: " + d3.min(data, el => +el.population));
+        console.log("Max population: " + d3.max(data, el => +el.population));
+        console.log("Average population: " + d3.mean(data, el => +el.population));
+    });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Selections and Binding</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+    <style>
+        .cities {
+            color: blueviolet;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid" style="margin-top: 20px">
+
+    <div class="row">
+
+        <div class="col-xs-6 col-xs-offset-3">
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">Selections and Binding</h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <ul class="list-group">
+
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    d3.csv("/api/data/cities",
+        (error, data) => {
+            if (error) {
+                console.error(error);
+            } else {
+                d3.select("ul").html("");
+                dataViz(data);
+            }
+        }
+    );
+
+    function dataViz(incomingData) {
+        d3.select("ul") // Select the parent element, the parent must already exist
+            .selectAll("li.list-group-item") //An empty selection as there is no <li> element in <ul> with class of "list-group-item"
+            .data(incomingData) // Bind the data to the selection, the associated data is stored in a data attribute of the element
+            .enter() // Defines how to respond when there's more data than DOM elements in a selection
+            .append("li") // Create an element in the current selection
+            .attr("class", "list-group-item cities") // Sets the class of each newly created element
+            .html(d => d.label); // Sets the content of the created <div>
+    }
+
+</script>
+
+</body>
+</html>

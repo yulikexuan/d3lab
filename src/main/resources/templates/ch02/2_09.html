@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Polylinear Scales</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="container-fluid" style="margin-top:20px;">
+
+    <div class="row">
+
+        <div class="col-xs-6 col-xs-offset-3">
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">
+                                Polylinear Scales
+                            </h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <svg style="width:100%;height:500px;border:1px lightgray solid;">
+                    </svg>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    /*
+     * Particularly values between 1 and 100
+     * Sometimes values between 100 and 1000
+     * Occasionally, quite larte like 24500
+     */
+    var yScale = d3.scaleLinear().domain([0, 100, 1000, 25000]).range([0, 250, 375, 500]);
+
+    d3.select("svg")
+        .selectAll("rect")
+        .data([14, 68, 24500, 430, 19, 1000, 5555])
+        .enter()
+        .append("rect")
+        .attr("width", 20)
+        .attr("height", d => yScale(d))
+        .style("fill", "orange")
+        .style("stroke", "blue")
+        .style("stroke-width", "1px")
+        .attr("x", (d, i) => i * 25)
+        .attr("y", d => 500 - yScale(d));
+
+</script>
+
+</body>
+</html>

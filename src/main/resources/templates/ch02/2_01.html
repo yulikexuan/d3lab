@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Liner</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+</head>
+<body>
+<div class="container-fluid" style="margin-top: 20px">
+
+    <div class="row">
+
+        <div class="col-xs-6 col-xs-offset-3">
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">Data Scale Liner</h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="alert alert-success">
+                        Check the console of your browser.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    console.clear();
+    console.log(parseInt("77"));
+    console.log(parseFloat("3.14"));
+    console.log(Date.parse("Sun, 22 Dec 2013 08:00:00 GMT"));
+    text = "alpha,beta,gamma";
+    console.log(text.split(","));
+
+    var newRamp = d3.scaleLinear().domain([500000,13000000]).range([0, 500]);
+    console.log(newRamp(1000000));
+    console.log(newRamp(9000000));
+    console.log(newRamp.invert(313));
+</script>
+
+</body>
+</html>

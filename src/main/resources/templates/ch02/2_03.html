@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Scale Quantile</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+</head>
+<body>
+<div class="container-fluid" style="margin-top: 20px">
+
+    <div class="row">
+
+        <div class="col-xs-6 col-xs-offset-3">
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">Data Scale Quantile</h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="alert alert-success">
+                        Check the console of your browser.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    var sampleArray = [423, 124, 66, 424, 58, 10, 900, 44, 1];
+    var qScale = d3.scaleQuantile().domain(sampleArray).range([0, 1, 2]);
+    console.log(qScale(423));
+    console.log(qScale(20));
+    console.log(qScale(100));
+</script>
+
+</body>
+</html>

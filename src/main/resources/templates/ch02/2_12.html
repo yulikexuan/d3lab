@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Channels</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="container-fluid" style="margin-top:20px;">
+
+    <div class="row">
+
+        <div class="col-xs-6 col-xs-offset-3">
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">
+                                Channels
+                            </h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <svg id="svg" style="width:500px;height:500px;border:1px lightgray solid;" >
+                    </svg>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    d3.json("/api/data/tweets", (error, data) => {tweetsViz(data.tweets)});
+
+    function tweetsViz(incomingData) {
+
+        incomingData.forEach(d => {
+            d.impact = d.favorites.length + d.retweets.length;
+            d.tweetTime = new Date(d.timestamp);
+        });
+
+        var maxImpact = d3.max(incomingData, d => d.impact);
+
+        /*
+         * d3.extent() conveniently returns d3.min() and d3.max() in a
+         * two-piece array
+         */
+        var startEnd = d3.extent(incomingData, d => d.tweetTime);
+
+        var timeRamp = d3.scaleTime().domain(startEnd).range([20, 480]);
+
+        var yScale = d3.scaleLinear()
+                .domain([0, maxImpact])
+                .range([0, 460]);
+
+        var radiusScale = d3.scaleLinear()
+                .domain([0, maxImpact])
+                .range([1, 20]);
+
+        var colorScale = d3.scaleLinear()
+                .domain([0, maxImpact])
+                .range(["#FFFFFF", "#FF4400"]);
+
+        d3.select("svg")
+            .html("")
+            .selectAll("circle")
+            .data(incomingData)
+            .enter()
+            .append("circle")
+            .attr("r", d => radiusScale(d.impact))
+            .attr("cx", d => timeRamp(d.tweetTime))
+            .attr("cy", d => 480 - yScale(d.impact))
+            .style("fill", d => colorScale(d.impact))
+            .style("stroke", "blue")
+            .style("stroke-width", "1px");
+    }
+
+</script>
+
+</body>
+</html>
