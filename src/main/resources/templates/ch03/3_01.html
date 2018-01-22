@@ -82,6 +82,13 @@
 
             teamG
                 .append("circle")
+                .attr("r", 0)
+                .transition()
+                .delay((d, i) => i * 100)
+                .duration(500)
+                .attr("r", 40)
+                .transition()
+                .duration(500)
                 .attr("r", 20);
 
             teamG
@@ -108,29 +115,22 @@
                 .enter()
                 .append("button")
                 .html(d => d)
-                .on("click", datapoint => {
-                    console.log(datapoint);
-                    var maxValue = d3.max(incomingData,
-                            d => parseFloat(d[datapoint]));
-                    var radiusScale = d3.scaleLinear()
-                        .domain([0, maxValue])
-                        .range([2, 20]);
-                    d3.selectAll("g.overallG")
-                        .select("circle")
-                        .transition()
-                        .duration(1000)
-                        .attr("r", d => radiusScale(d[datapoint]));
-                    });
+                .on("click", buttonClick);
                 //.html(d => d);
 
-            // function buttonClick(datapoint) {
-            //     console.log(datapoint);
-            //     var maxValue = d3.max(incomingData, d => parseFloat(d[datapoint]));
-            //     var radiusScale = d3.scaleLinear().domain([0, maxValue]).range([2, 20]);
-            //     d3.selectAll("g.overallG")
-            //         .select("circle")
-            //         .attr("r", d => radiusScale(d[datapoint]));
-            // }
+            function buttonClick(datapoint) {
+                console.log(datapoint);
+                var maxValue = d3.max(incomingData,
+                    d => parseFloat(d[datapoint]));
+                var radiusScale = d3.scaleLinear()
+                    .domain([0, maxValue])
+                    .range([2, 20]);
+                d3.selectAll("g.overallG")
+                    .select("circle")
+                    .transition()
+                    .duration(1000)
+                    .attr("r", d => radiusScale(d[datapoint]));
+            }
 
             teamG.on("mouseover", highlightRegion);
             function highlightRegion(d) {
