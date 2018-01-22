@@ -31,6 +31,7 @@ public class IndexController {
     static final String HTTP_HEADER_CONTENT_TYPE_JSON = "application/json";
 
     static final String PATH_CITIES_CSV = "/static/data/cities.csv";
+    static final String PATH_WORLDCUP_CSV = "/static/data/worldcup.csv";
     static final String PATH_TWEETS_JSON = "/static/data/tweets.json";
 
     @RequestMapping({"", "/", "/home"})
@@ -57,6 +58,13 @@ public class IndexController {
     public void getTweetsJsonFile(HttpServletResponse response) {
         File file = new File(getClass().getResource(PATH_TWEETS_JSON).getFile());
         this.responseFile(response, file, HTTP_HEADER_CONTENT_TYPE_JSON);
+    }
+
+    @GetMapping
+    @RequestMapping("/api/data/worldcup")
+    public void getworldcupCsvFile(HttpServletResponse response) {
+        File file = new File(getClass().getResource(PATH_WORLDCUP_CSV).getFile());
+        this.responseFile(response, file, HTTP_HEADER_CONTENT_TYPE_CSV);
     }
 
     private void responseFile(HttpServletResponse response, File file,
