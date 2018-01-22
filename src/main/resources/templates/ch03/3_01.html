@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ch-03 D3 Events</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <link type="text/css" rel="stylesheet" href="/css/d3ia.css" />
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+    <script src="/js/colorbrewer.js"></script>
+    <!--<script src="/js/soccerviz.js"></script>-->
+</head>
+<body onload="createSoccerViz()">
+<div class="container-fluid" style="margin-top:20px;">
+
+    <div class="row">
+
+        <div class="col-xs-6" style="width: 564px;">
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">
+                                Ch03 D3 Events
+                            </h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div id="viz">
+                        <svg style="width:500px;height:500px;border:1px lightgray solid;"></svg>
+                    </div>
+                    <div id="controls"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function createSoccerViz() {
+
+        d3.csv("/api/data/worldcup", data => {overallTeamViz(data);});
+
+        function overallTeamViz(incomingData) {
+            d3.select("svg")
+                .append("g")
+                .attr("id", "teamsG")
+                .attr("transform", "translate(50,300)")
+                .selectAll("g")
+                .data(incomingData)
+                .enter()
+                .append("g")
+                .attr("class", "overallG")
+                .attr("transform", (d, i) => "translate(" + (i * 50) + ", 0)");
+
+            var teamG = d3.selectAll("g.overallG");
+
+            teamG
+                .append("circle")
+                .attr("r", 20);
+
+            teamG
+                .append("text")
+                .style("text-anchor", "middle")
+                .attr("y", 40)
+                .text(d => d.team);
+
+            /*
+             * Use Object.keys and pass it one of the objects from our array
+             * Object.keys function returns the names of the attributes of an
+             * object as an array
+             */
+            const dataKeys = Object.keys(incomingData[0]).filter(d => d !== "team" &&  d !== "region");
+            console.log(dataKeys);
+
+            /*
+             * The .on function is a wrapper for the traditional HTML mouse
+             * events, and accepts "click", "mouseover", "mouseout", and so on.
+             */
+            d3.select("#controls")
+                .selectAll("button.teams")
+                .data(dataKeys)
+                .enter()
+                .append("button")
+                .html(d => d)
+                .on("click", datapoint => {
+                    console.log(datapoint);
+                    var maxValue = d3.max(incomingData,
+                            d => parseFloat(d[datapoint]));
+                    var radiusScale = d3.scaleLinear()
+                        .domain([0, maxValue])
+                        .range([2, 20]);
+                    d3.selectAll("g.overallG")
+                        .select("circle")
+                        .transition()
+                        .duration(1000)
+                        .attr("r", d => radiusScale(d[datapoint]));
+                    });
+                //.html(d => d);
+
+            // function buttonClick(datapoint) {
+            //     console.log(datapoint);
+            //     var maxValue = d3.max(incomingData, d => parseFloat(d[datapoint]));
+            //     var radiusScale = d3.scaleLinear().domain([0, maxValue]).range([2, 20]);
+            //     d3.selectAll("g.overallG")
+            //         .select("circle")
+            //         .attr("r", d => radiusScale(d[datapoint]));
+            // }
+
+            teamG.on("mouseover", highlightRegion);
+            function highlightRegion(d) {
+                d3.selectAll("g.overallG")
+                    .select("circle")
+                    .attr("class", p => p.region === d.region ? "active" : "inactive");
+            }
+
+            teamG.on("mouseout", function() {
+                d3.selectAll("g.overallG")
+                    .select("circle").classed("inactive", false).classed("active", false)
+            });
+
+        }//: End of overallTeamViz
+    }
+
+</script>
+
+</body>
+</html>
