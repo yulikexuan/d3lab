@@ -134,17 +134,17 @@
                 var radiusScale = d3.scaleLinear()
                     .domain([0, maxValue])
                     .range([2, 20]);
-                var tenColorScale = d3.scaleOrdinal()
-                    // .domain(["UEFA", "CONMEBOL", "CAF", "APC"])
-                    .domain(["UEFA", "CONMEBOL"])
-                    .unknown("#c2c9cF")
-                    .range(d3.schemeCategory10);
+
+                var colorQuantize = d3.scaleQuantize()
+                    .domain([0, maxValue]).range(colorbrewer.RdYlBu[3]);
+
+
                 d3.selectAll("g.overallG")
                     .select("circle")
                     .transition()
                     .duration(1000)
                     .attr("r", d => radiusScale(d[datapoint]))
-                    .style("fill", d => tenColorScale(d.region));
+                    .style("fill", d => colorQuantize(d[datapoint]));
             }
 
             teamG.on("mouseover", highlightRegion);
