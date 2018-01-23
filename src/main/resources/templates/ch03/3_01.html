@@ -70,6 +70,7 @@
             d3.select("svg")
                 .append("g")
                 .attr("id", "teamsG")
+                // translate: to change something or to be changed into a different form
                 .attr("transform", "translate(50,300)")
                 .selectAll("g")
                 .data(incomingData)
@@ -83,7 +84,7 @@
             teamG
                 .append("circle")
                 .attr("r", 0)
-                .transition()
+                .transition() // 过渡 the process or a period of changing from one state or condition to another
                 .delay((d, i) => i * 100)
                 .duration(500)
                 .attr("r", 40)
@@ -96,6 +97,14 @@
                 .style("text-anchor", "middle")
                 .attr("y", 40)
                 .text(d => d.team);
+
+            // d3.select("circle")
+            //     .each(function (d, i) {
+            //         console.log(">>>>>>> d: " + d);
+            //         console.log(">>>>>>> i:" + i);
+            //         console.log(">>>>>>> this:" + this);
+            //         console.log("-----------------------------------------------");
+            //     });
 
             /*
              * Use Object.keys and pass it one of the objects from our array
@@ -133,16 +142,44 @@
             }
 
             teamG.on("mouseover", highlightRegion);
-            function highlightRegion(d) {
+            function highlightRegion(d, i) {
+                d3.select(this)
+                    .select("text")
+                    .classed("active", true)
+                    .attr("y", 10);
                 d3.selectAll("g.overallG")
                     .select("circle")
-                    .attr("class", p => p.region === d.region ? "active" : "inactive");
+                    // .attr("class", p => p.region === d.region ? "active" : "inactive");
+                    .each(function (p) {
+                        p.region == d.region ?
+                            d3.select(this).classed("active", true) :
+                            d3.select(this).classed("inactive", true);
+                    });
+                this.parentElement.appendChild(this);
             }
+
+            // Disable mouseover event on each text element
+            teamG.select("text").style("pointer-events", "none");
 
             teamG.on("mouseout", function() {
                 d3.selectAll("g.overallG")
-                    .select("circle").classed("inactive", false).classed("active", false)
+                    .select("circle")
+                    .classed("inactive", false)
+                    .classed("active", false);
+                d3.selectAll("g.overallG")
+                    .select("text")
+                    .classed("active", false)
+                    .classed("inactive", false)
+                    .attr("y", 40);
             });
+
+            d3.select("circle").each(function(d, i) {
+                console.log(">>>>>>> d: " + d);
+                console.log(">>>>>>> i: " + i);
+                console.log(">>>>>>> this: " + this);
+            });
+
+            console.log(d3.select("circle").node());
 
         }//: End of overallTeamViz
     }
