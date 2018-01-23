@@ -143,18 +143,15 @@
 
             teamG.on("mouseover", highlightRegion);
             function highlightRegion(d, i) {
+                var teamColor = d3.rgb("#75739F");
                 d3.select(this)
                     .select("text")
                     .classed("active", true)
                     .attr("y", 10);
                 d3.selectAll("g.overallG")
                     .select("circle")
-                    // .attr("class", p => p.region === d.region ? "active" : "inactive");
-                    .each(function (p) {
-                        p.region == d.region ?
-                            d3.select(this).classed("active", true) :
-                            d3.select(this).classed("inactive", true);
-                    });
+                    .style("fill", p => p.region === d.region ?
+                        teamColor.darker(0.75) : teamColor.brighter(0.5));
                 this.parentElement.appendChild(this);
             }
 
@@ -165,7 +162,8 @@
                 d3.selectAll("g.overallG")
                     .select("circle")
                     .classed("inactive", false)
-                    .classed("active", false);
+                    .classed("active", false)
+                    .style("fill", "#75739F");
                 d3.selectAll("g.overallG")
                     .select("text")
                     .classed("active", false)
