@@ -125,20 +125,27 @@
                 .append("button")
                 .html(d => d)
                 .on("click", buttonClick);
-                //.html(d => d);
-
+            /*
+             * Stick to ramps that emphasize hue or saturation (by using HSL)
+             */
             function buttonClick(datapoint) {
-                console.log(datapoint);
                 var maxValue = d3.max(incomingData,
                     d => parseFloat(d[datapoint]));
                 var radiusScale = d3.scaleLinear()
                     .domain([0, maxValue])
                     .range([2, 20]);
+                var ybRamp = d3.scaleLinear()
+                    .interpolate(d3.interpolateHsl) // hue 色调, saturation 饱和度, lightness
+                    // .interpolate(d3.interpolateHcl) // hue, chroma 色度, luminosity 亮度,
+                    // .interpolate(d3.interpolateLab) // lightness, color-opponent space,
+                    .domain([0, maxValue])
+                    .range(["blue", "red"]);
                 d3.selectAll("g.overallG")
                     .select("circle")
                     .transition()
                     .duration(1000)
-                    .attr("r", d => radiusScale(d[datapoint]));
+                    .attr("r", d => radiusScale(d[datapoint]))
+                    .style("fill", d => ybRamp(d[datapoint]));
             }
 
             teamG.on("mouseover", highlightRegion);
