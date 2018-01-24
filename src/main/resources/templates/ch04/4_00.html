@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Loading</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+    <style>
+        svg {
+            width: 600px;
+            height: 600px;
+            border: #E2E9EF solid 1px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid" style="margin-top: 20px">
+
+    <div class="row">
+
+        <div class="col-xs-12" >
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">Data Loading</h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div id="viz">
+                        <svg></svg>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    var scatterData = [
+        {friends: 5, salary: 22000},
+        {friends: 3, salary: 18000},
+        {friends: 10, salary: 88000},
+        {friends: 0, salary: 180000},
+        {friends: 27, salary: 56000},
+        {friends: 8, salary: 74000}
+    ];
+
+    /*
+     * The d3.extent function finds the maximum and minimum values in the array
+     */
+    var xExt = d3.extent(scatterData, d => d.salary);
+    var yExt = d3.extent(scatterData, d => d.friends);
+
+    var xScale = d3.scaleLinear()
+        .domain(xExt)
+        .range([0, 500]);
+    var yScale = d3.scaleLinear()
+        .domain(yExt)
+        .range([0, 500]);
+
+    var xAxis = d3.axisBottom()
+        .scale(xScale)
+        .ticks(4)
+        .tickSize(500);
+
+    var yAxis = d3.axisRight()
+        .scale(yScale)
+        .ticks(16)
+        .tickSize(500);
+
+
+    d3.select("svg").append("g").attr("id", "xAxisG").call(xAxis);
+    d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
+
+    d3.select("svg")
+        .selectAll("circle")
+        .data(scatterData)
+        .enter()
+        .append("circle")
+        .attr("r", 5)
+        .attr("cx", d => xScale(d.salary))
+        .attr("cy", d => yScale(d.friends));
+
+</script>
+
+</body>
+</html>
