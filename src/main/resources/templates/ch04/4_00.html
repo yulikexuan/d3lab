@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Data Loading</title>
+    <title>Creating Axes for Scatterplot</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -38,7 +38,7 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-9">
-                            <h1 class="panel-title">Data Loading</h1>
+                            <h1 class="panel-title">Scatterplot</h1>
                         </div>
                         <div class="col-xs-3" style="text-align:right;">
                             <a th:href="@{/}" style="color:white;">Home</a>
@@ -62,6 +62,9 @@
 
 <script>
 
+    /*
+     * Load and format data:
+     */
     var scatterData = [
         {friends: 5, salary: 22000},
         {friends: 3, salary: 18000},
@@ -72,6 +75,7 @@
     ];
 
     /*
+     * Measure:
      * The d3.extent function finds the maximum and minimum values in the array
      */
     var xExt = d3.extent(scatterData, d => d.salary);
@@ -80,24 +84,48 @@
     var xScale = d3.scaleLinear()
         .domain(xExt)
         .range([0, 500]);
+
     var yScale = d3.scaleLinear()
         .domain(yExt)
         .range([0, 500]);
 
+    /*
+     * Create x-axis model
+     */
     var xAxis = d3.axisBottom()
         .scale(xScale)
         .ticks(4)
         .tickSize(500);
 
+    /*
+     * Create y-axis model
+     */
     var yAxis = d3.axisRight()
         .scale(yScale)
         .ticks(16)
         .tickSize(500);
 
+    /*
+     * Create x-axis
+     */
+    d3.select("svg")
+        .append("g")
+        .attr("id", "xAxisG")
+        .style("fill", "Transparent")
+        .call(xAxis);
 
-    d3.select("svg").append("g").attr("id", "xAxisG").call(xAxis);
-    d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
+    /*
+     * Create y-axis
+     */
+    d3.select("svg")
+        .append("g")
+        .attr("id", "yAxisG")
+        .style("fill", "Transparent")
+        .call(yAxis);
 
+    /*
+     * Create chart
+     */
     d3.select("svg")
         .selectAll("circle")
         .data(scatterData)

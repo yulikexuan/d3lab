@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Line Chart</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+    <style>
+        svg {
+            width: 600px;
+            height: 600px;
+            border: #E2E9EF solid 1px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid" style="margin-top: 20px">
+
+    <div class="row">
+
+        <div class="col-xs-12" >
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">Line Chart</h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div id="viz">
+                        <svg></svg>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    d3.csv("/api/data/tweetdata", lineChart);
+
+    function lineChart(data) {
+
+        const TWEETS_COLOR = "#5EAED5";
+        const RETWEETS_COLOR = "#33b488";
+        const FAVORITES_COLOR = "#FE9A22";
+
+        var xScale = d3.scaleLinear()
+            .domain([0, 10.5])
+            .range([0, 480]);
+        var yScale = d3.scaleLinear()
+            .domain([0, 35])
+            .range([480, 20]);
+
+        var xAxis = d3.axisBottom()
+            .scale(xScale)
+            .tickSize(480)
+            .tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+        var yAxis = d3.axisRight()
+            .scale(yScale)
+            .tickSize(480)
+            .ticks(10);
+
+        d3.select("svg")
+            .append("g")
+            .attr("id", "xAxisG")
+            .call(xAxis);
+
+        d3.select("svg")
+            .append("g")
+            .attr("id", "yAxis")
+            .call(yAxis);
+
+        d3.select("svg").selectAll("circle.tweets")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "tweets")
+            .attr("r", 5)
+            .attr("cx", d => xScale(d.day))
+            .attr("cy", d => yScale(d.tweets))
+            .style("fill", TWEETS_COLOR);
+
+        d3.select("svg").selectAll("circle.retweets")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "retweets")
+            .attr("r", 5)
+            .attr("cx", d => xScale(d.day))
+            .attr("cy", d => yScale(d.retweets))
+            .style("fill", RETWEETS_COLOR);
+
+        d3.select("svg").selectAll("circle.favorites")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "favorites")
+            .attr("r", 5)
+            .attr("cx", d => xScale(d.day))
+            .attr("cy", d => yScale(d.favorites))
+            .style("fill", FAVORITES_COLOR);
+
+        const LAMBDA_X_SCALE = d => xScale(d.day);
+
+        /*
+         * Define the line generator of tweets: define how it accesses the data
+         * it uses to draw the line
+         */
+        var tweetLine = d3.line()
+            .x(LAMBDA_X_SCALE) // .x() accessor points to the scaled x value of the point
+            .y(d => yScale(d.tweets)); // .y() accessor points to the scaled y value of the point
+            // .defined(d => d.y !== null);
+
+        var retweetLine = d3.line()
+            .x(LAMBDA_X_SCALE)
+            .y(d => yScale(d.retweets));
+
+        var favLine = d3.line()
+            .x(LAMBDA_X_SCALE)
+            .y(d => yScale(d.favorites));
+
+        d3.select("svg")
+            .append("path")
+            .attr("d", tweetLine(data))
+            .attr("fill", "none")
+            .attr("stroke", TWEETS_COLOR)
+            .attr("stroke-width", 2);
+
+        d3.select("svg")
+            .append("path")
+            .attr("d", retweetLine(data))
+            .attr("fill", "none")
+            .attr("stroke", RETWEETS_COLOR)
+            .attr("stroke-width", 2);
+
+        d3.select("svg")
+            .append("path")
+            .attr("d", favLine(data))
+            .attr("fill", "none")
+            .attr("stroke", FAVORITES_COLOR)
+            .attr("stroke-width", 2);
+
+    }// End of lineChart
+
+</script>
+
+</body>
+</html>
