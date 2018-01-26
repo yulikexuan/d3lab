@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pie Charts</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}">
+    </script>
+    <script src="/webjars/d3js/4.10.2/d3.min.js"></script>
+    <style>
+        svg {
+            width: 600px;
+            height: 600px;
+            padding: 30px;
+            border: #E2E9EF solid 1px;
+        }
+
+        .tick > line {
+            stroke: navy;
+        }
+
+        #yAxisG .tick > line {
+            stroke: none;
+        }
+
+        text {
+            fill: navy;
+        }
+
+        path.domain {
+            stroke: navy;
+            fill: none;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container-fluid" style="margin-top: 20px">
+
+    <div class="row">
+
+        <div class="col-xs-12" >
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h1 class="panel-title">Pie Charts</h1>
+                        </div>
+                        <div class="col-xs-3" style="text-align:right;">
+                            <a th:href="@{/}" style="color:white;">Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div id="viz">
+                        <svg></svg>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    // d3.json("/api/data/tweets", data => pieChart(data.tweets));
+
+    var pieChart = d3.pie();
+    var yourPie = pieChart([1, 3, 6, 4]);
+    // console.log(yourPie);
+
+    /*
+     * d3.arc is the generator to make each of the pieces of the pieChart
+     * d3.arc generates drawing instructions for paths
+     */
+    var newArc = d3.arc();
+    newArc.innerRadius(0)
+        .outerRadius(100)
+    // console.log(newArc(yourPie[0]));
+
+    var fillScale = d3.scaleOrdinal()
+        .range(["#fcd88a", "#cf7c1c", "#93c464", "#75734F"]);
+
+    d3.select("svg")
+        .append("g")
+        .attr("transform", "translate(100, 100)")
+        .selectAll("path")
+        .data(yourPie)
+        .enter()
+        .append("path")
+        /*
+         * The shape of an SVG Path element is defined by one attribute: d
+         * This attribute, d, contains a series of commands and parameters in
+         * the SVG Path Mini-Language
+         * These commands and parameters are a sequential set of instructions
+         * for how to "move the pen over the paper"
+         * The instructions are defined in case-senstive terms of moveto (set
+         * - a new current point)
+         * - lineto (draw a straight line)
+         * - curveto (draw a curve using a cubic Bézier)
+         * - arc (elliptical or circular arc)
+         * - closepath (close the current shape by drawing a line to the last
+         * moveto).
+         */
+        .attr("d", newArc)
+        .style("fill", (d, i) => fillScale(i))
+        .style("stroke", "#42494F")
+        .style("stroke-width", "2px");
+
+    d3.json("/api/data/tweets", data => tweeterPie(data.tweets));
+
+    function tweeterPie(tweetsData) {
+
+        var nestedTweets = d3.nest()
+            .key(d => d.user)
+            .entries(tweetsData);
+        console.log(nestedTweets);
+        nestedTweets.forEach(d => {
+            d.numTweets = d.values.length;
+            d.numFavorites = d3.sum(d.values, p => p.favorites.length);
+            d.numRetweets = d3.sum(d.values, p => p.retweets.length);
+            // console.log(d.numTweets + ", " + d.numFavorites + ", " + d.numRetweets);
+        });
+
+        var tweetChart = d3.pie();
+        var tweetArc = d3.arc();
+        tweetArc.innerRadius(0).outerRadius(100);
+
+        tweetChart.value(d => d.numFavorites);
+
+        var tweetPie = tweetChart(nestedTweets);
+
+        d3.select("svg")
+            .append("g")
+            .attr("transform","translate(400, 100)")
+            .selectAll("path")
+            .data(tweetPie)
+            .enter()
+            .append("path")
+            .attr("d", tweetArc)
+            .style("fill", (d,i) => fillScale(i))
+            .style("stroke", "black")
+            .style("stroke-width", "2px");
+    }
+
+</script>
+
+</body>
+</html>
